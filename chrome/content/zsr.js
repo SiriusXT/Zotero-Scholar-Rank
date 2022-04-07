@@ -65,15 +65,15 @@ zsr.updateCollection = function(collection) {
     }
 };
 zsr.hasRequiredFields = function(item) {
-    return item.getField('publicationTitle') || item.getField('proceedingsTitle') ;
+    return item.getField('publicationTitle') || item.getField('proceedingsTitle')||item.getField('conferenceName')||item.getField('university') ;
 }
 zsr.processItems = function(items) {
     while (item = items.shift()) {
-        if (!zsr.hasRequiredFields(item)) {
-            item.setField('callNumber', "Not found");
-                item.saveTx();
-            continue;
-        }
+        // if (!zsr.hasRequiredFields(item)) {
+        //     item.setField('callNumber', "Not found");
+        //         item.saveTx();
+        //     continue;
+        // }
         this.getRank(item,function(item, rank){
                 item.setField('callNumber', rank);
                 item.saveTx();
@@ -85,13 +85,23 @@ zsr.processItems = function(items) {
 zsr.getRank = function(item,cb){
     let url;
     if (item.itemType == 'journalArticle'){
-        url = encodeURI(zsr._baseUrl+"/1/" +item.getField('publicationTitle'));//1:期刊，2：会议
+        if (item.getField('publicationTitle')){url = encodeURI(zsr._baseUrl+"/1/" +item.getField('publicationTitle'));}//1:期刊，2：会议
+        else{item.setField('callNumber', "Not found");
+                item.saveTx();}
     }
     else if (item.itemType == 'conferencePaper'){
-        url = encodeURI(zsr._baseUrl+"/2/" +item.getField('proceedingsTitle')+" &&& "+item.getField('conferenceName'));//1:期刊，2：会议
-    }else{
-        item.setField('callNumber', 'Err1');
+        if (item.getField('proceedingsTitle') && item.getField('conferenceName')){url = encodeURI(zsr._baseUrl+"/2/" +item.getField('proceedingsTitle')+" &&& "+item.getField('conferenceName'));}
+        else if (item.getField('proceedingsTitle') ){url = encodeURI(zsr._baseUrl+"/2/" +item.getField('proceedingsTitle'));}
+        else if (item.getField('conferenceName')){url = encodeURI(zsr._baseUrl+"/2/" +item.getField('conferenceName'));}
+        else{item.setField('callNumber', "Not found");
+        item.saveTx();}
+    }
+    else if(item.itemType == 'thesis'){
+        item.setField('callNumber', item.getField('university'));
         item.saveTx();
+        return ;
+    }else{
+        return ;
     }
     var http=new XMLHttpRequest();
         http.open('get', url, true);

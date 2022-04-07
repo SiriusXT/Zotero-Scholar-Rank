@@ -16,6 +16,7 @@
         src="chrome://zoteroscholarrank/content/zsr.js"/>
 
     <popup id="zotero-collectionmenu">
+    <menuseparator />
         <menuitem
             id="zotero-collectionmenu-scholarrank"
             label="&zotero.scholarrank.updateCol.label;"
@@ -23,6 +24,7 @@
     </popup>
 
     <popup id="zotero-itemmenu">
+    <menuseparator />
         <menuitem
             id="zotero-itemmenu-scholarrank"
             label="&zotero.scholarrank.update.label;"
