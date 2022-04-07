@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE overlay SYSTEM "chrome://zoteroscholarrank/locale/overlay.dtd">
+
+<overlay
+    id="zoteroscholarrank-overlay"
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+    <stringbundleset>
+        <stringbundle
+            id="zoteroscholarrank-bundle"
+            src="chrome://zoteroscholarrank/locale/zsr.properties"/>
+    </stringbundleset>
+
+    <script
+        type="application/x-javascript"
+        src="chrome://zoteroscholarrank/content/zsr.js"/>
+
+    <popup id="zotero-collectionmenu">
+        <menuitem
+            id="zotero-collectionmenu-scholarrank"
+            label="&zotero.scholarrank.updateCol.label;"
+            oncommand="Zotero.ScholarRank.updateCollectionMenuEntry()"/>
+    </popup>
+
+    <popup id="zotero-itemmenu">
+        <menuitem
+            id="zotero-itemmenu-scholarrank"
+            label="&zotero.scholarrank.update.label;"
+            oncommand="Zotero.ScholarRank.updateItemMenuEntries()"/>
+    </popup>
+</overlay>

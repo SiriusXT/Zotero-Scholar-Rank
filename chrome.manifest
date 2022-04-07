@@ -1,0 +1,5 @@
+content zoteroscholarrank chrome/content/
+
+locale  zoteroscholarrank  en-US   chrome/locale/en-US/
+
+overlay chrome://zotero/content/zoteroPane.xul chrome://zoteroscholarrank/content/overlay.xul
