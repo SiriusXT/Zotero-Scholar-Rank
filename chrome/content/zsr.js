@@ -1,5 +1,5 @@
 let zsr = {
-    _baseUrl : 'https://scholarrank.ssang.top'
+    _baseUrl : 'https://scholarrank.ssang.top:28087'
 };
 
 zsr.init = function() {
@@ -64,9 +64,9 @@ zsr.updateCollection = function(collection) {
         this.updateCollection(childColls[idx]);
     }
 };
-zsr.hasRequiredFields = function(item) {
-    return item.getField('publicationTitle') || item.getField('proceedingsTitle')||item.getField('conferenceName')||item.getField('university') ;
-}
+// zsr.hasRequiredFields = function(item) {
+//     return item.getField('publicationTitle') || item.getField('proceedingsTitle')||item.getField('conferenceName')||item.getField('university') ;
+// }
 zsr.processItems = function(items) {
     while (item = items.shift()) {
         // if (!zsr.hasRequiredFields(item)) {
@@ -81,27 +81,27 @@ zsr.processItems = function(items) {
         );       
 
     }
-};
+}
 zsr.getRank = function(item,cb){
     let url;
     if (item.itemType == 'journalArticle'){
         if (item.getField('publicationTitle')){url = encodeURI(zsr._baseUrl+"/1/" +item.getField('publicationTitle'));}//1:期刊，2：会议
         else{item.setField('callNumber', "Not found");
-                item.saveTx();}
+                item.saveTx();return 0;}
     }
     else if (item.itemType == 'conferencePaper'){
         if (item.getField('proceedingsTitle') && item.getField('conferenceName')){url = encodeURI(zsr._baseUrl+"/2/" +item.getField('proceedingsTitle')+" &&& "+item.getField('conferenceName'));}
         else if (item.getField('proceedingsTitle') ){url = encodeURI(zsr._baseUrl+"/2/" +item.getField('proceedingsTitle'));}
         else if (item.getField('conferenceName')){url = encodeURI(zsr._baseUrl+"/2/" +item.getField('conferenceName'));}
         else{item.setField('callNumber', "Not found");
-        item.saveTx();}
+        item.saveTx();return 0;}
     }
     else if(item.itemType == 'thesis'){
         item.setField('callNumber', item.getField('university'));
         item.saveTx();
-        return ;
+        return 0;
     }else{
-        return ;
+        return 0;
     }
     var http=new XMLHttpRequest();
         http.open('get', url, true);
@@ -109,7 +109,7 @@ zsr.getRank = function(item,cb){
             if ( http.readyState == 4 && http.status == 200 ) {
                 cb(item,http.responseText); 
             } else {
-                cb(item,"Err2");
+                cb(item,"Net Error");
             }
         }            
         http.send();
