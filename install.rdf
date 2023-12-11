@@ -10,13 +10,13 @@
         em:maxVersion="20.*"/>
     <RDF:Description
         RDF:about="urn:mozilla:install-manifest"
-        em:id="xx@ssang.top"
+        em:id="SiriusXT@null.null"
         em:name="Zotero Scholar Rank"
-        em:version="1.12"
+        em:version="2.1"
         em:type="2"
-        em:creator="SSang"
+        em:creator="SiriusXT"
         em:description="Zotero Scholar Rank"
-        em:homepageURL="http://ssang.top">
+        em:homepageURL="https://github.com/SiriusXT/Zotero-Scholar-Rank">
         <em:type>2</em:type>
         <em:targetApplication RDF:resource="rdf:#$x61SL3"/>
         <em:targetApplication>
