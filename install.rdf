@@ -12,7 +12,7 @@
         RDF:about="urn:mozilla:install-manifest"
         em:id="SiriusXT@null.null"
         em:name="Zotero Scholar Rank"
-        em:version="2.2"
+        em:version="2.3"
         em:type="2"
         em:creator="SiriusXT"
         em:description="Zotero Scholar Rank"

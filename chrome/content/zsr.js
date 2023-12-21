@@ -94,15 +94,17 @@ zsr.processItems = function (items) {
 zsr.findMatchInCCF = function(ccf, str) {
     let maxlen=2;
     let fenqu = "";
-
+    
     for (let i = 0; i < ccf.length; i++) {
         let entry = ccf[i];
-        if (entry.Journal != undefined && entry.Journal != "" && str.toLowerCase().indexOf(entry.Journal.toLowerCase()) >=0){
+        if (entry.Journal != undefined && entry.Journal != "" && str.toLowerCase().replace(/,/g, ' ').replace(/\s+/g, ' ').trim().indexOf(entry.Journal.toLowerCase().replace(/,/g, ' ').replace(/\s+/g, ' ').trim()) >=0){
             if (entry.Journal.length >= maxlen){
                 maxlen = entry.Journal.length;
                 fenqu = entry.fenqu;
             }
         }
+    }
+    for (let i = 0; i < ccf.length; i++) {
         if (fenqu == ""){ //如果全称找不到，则找缩写
             if (str.indexOf(entry.Abbr) >=0){
                 if (entry.Abbr.length >= maxlen){
@@ -224,10 +226,15 @@ zsr.getRank = function (item, cb) {
         
         else {
             item.setField('callNumber', "Invalid Title");
-            item.saveTx(); return 0;
+            item.saveTx(); 
+            return 0;
         }
     }
-    else if (item.itemType == 'thesis') {
+    else if (item.itemType == 'preprint') {
+        item.setField('callNumber', item.getField('repository'));
+        item.saveTx();
+        return 0;
+    } else if (item.itemType == 'thesis') {
         item.setField('callNumber', item.getField('university'));
         item.saveTx();
         return 0;
