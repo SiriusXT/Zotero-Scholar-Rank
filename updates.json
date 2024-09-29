@@ -1,0 +1,19 @@
+{
+  "addons": {
+    "SiriusXT@null.null": {
+      "updates": [
+        {
+          "version": "2.5",
+          "update_link": "https://github.com/SiriusXT/Zotero-Scholar-Rank/releases/download/2.5/Zotero-Scholar-Rank.xpi",
+          "update_hash": "sha256:71EF1EDE4D0FBC8D7725F22955E43B5BC6A342A226CDE89C175B4BA623CA35F4",
+          "applications": {
+            "zotero": {
+              "strict_min_version": "6.999",
+              "strict_max_version": "7.1.*"
+            }
+          }
+        }
+      ]
+    }
+  }
+}

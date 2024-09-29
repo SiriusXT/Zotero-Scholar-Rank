@@ -1,0 +1,19 @@
+{
+  "manifest_version": 2,
+  "name": "Zotero Scholar Rank",
+  "version": "2.5",
+  "description": "Zotero Scholar Rank.",
+  "homepage_url": "https://github.com/SiriusXT/Zotero-Scholar-Rank",
+  "author": "SiriusXT",
+  "icons": {
+    "256": "chrome/content/icons/favicon.png"
+  },
+  "applications": {
+    "zotero": {
+      "id": "SiriusXT@null.null",
+      "update_url": "https://raw.githubusercontent.com/SiriusXT/Zotero-Scholar-Rank/master/update.json",
+      "strict_min_version": "6.999",
+      "strict_max_version": "7.1.*"
+    }
+  }
+}
