@@ -353,105 +353,139 @@ $__zsr.app = {
     }
   },
 
-    // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+  // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
   findMatchInCCF: function (ccf, str) {
     let maxlen = 2;
     let fenqu = "";
-    
-    for (let i = 0; i < ccf.length; i++) {
-        let entry = ccf[i];
-        if (entry.Journal && str.toLowerCase().replace(/,/g, ' ').replace(/\s+/g, ' ').trim().includes(entry.Journal.toLowerCase().replace(/,/g, ' ').replace(/\s+/g, ' ').trim())) {
-            if (entry.Journal.length >= maxlen) {
-                maxlen = entry.Journal.length;
-                fenqu = entry.fenqu;
-            }
-        }
-    }
 
     for (let i = 0; i < ccf.length; i++) {
-        if (fenqu === "") { 
-            let entry = ccf[i];
-            if (str.includes(entry.Abbr)) {
-                if (entry.Abbr.length >= maxlen) {
-                    maxlen = entry.Abbr.length;
-                    fenqu = entry.fenqu;
-                }
-            }
-        }
-    }
+      let entry = ccf[i];
 
+      let processedStr = str.toLowerCase().replace(/,/g, ' ').replace(/\s+/g, ' ').trim();
+      let processedJournal = entry.Journal.toLowerCase().replace(/,/g, ' ').replace(/\s+/g, ' ').trim();
+      if (entry.Journal.indexOf("Computer Vision and Pattern Recognition")>=0) {
+        processedJournal = "Computer Vision and Pattern Recognition".toLowerCase().replace(/\s+/g, ' ').trim();
+      }
+      const matchIndex = processedStr.indexOf(processedJournal);
+      if (entry.Journal && matchIndex !== -1) {
+        // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> 
+        // https://github.com/SiriusXT/Zotero-Scholar-Rank/issues/26
+        // 获取匹配字符串前后的字符
+        const prevChar = matchIndex > 0 ? processedStr[matchIndex - 1
+        ] : null;
+        const nextChar = matchIndex + processedJournal.length < processedStr.length ? processedStr[matchIndex + processedJournal.length
+        ] : null;
+
+        // 检查前后字符是否都是空格
+        const isPrevCharSpace = prevChar === ' ' || prevChar === null;
+        const isNextCharSpace = nextChar === ' ' || nextChar === null;
+        // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+        if (entry.Journal.length >= maxlen && isPrevCharSpace && isNextCharSpace) {
+          maxlen = entry.Journal.length;
+          fenqu = entry.fenqu;
+        }
+      }
+    }
+    /////////////////
+    // maxlen = 2; abbr: Performance 
+    for (let i = 0; i < ccf.length; i++) {
+      if (true) {
+        let entry = ccf[i
+        ];
+        let abbr = entry.Abbr;
+        // 查找 entry.Abbr 在 str 中的匹配位置
+        const matchIndex = str.indexOf(abbr);
+        // 如果找到了匹配位置并且长度大于等于当前最大长度
+        if (matchIndex !== -1 && abbr.length >= maxlen) {
+          // 检查前一个和后一个字符是否是非字母字符或边界
+          const prevChar = matchIndex > 0 ? str[matchIndex - 1] : null;
+          const nextChar = matchIndex + abbr.length < str.length ? str[matchIndex + abbr.length] : null;
+
+          const isPrevCharNonLetter = prevChar === null || !/[a-zA-Z]/.test(prevChar);
+          const isNextCharNonLetter = nextChar === null || !/[a-zA-Z]/.test(nextChar);
+
+
+          // 只有在前后字符都不是字母时，才更新 maxlen 和 fenqu
+          if (isPrevCharNonLetter && isNextCharNonLetter) {
+            maxlen = abbr.length;
+            fenqu = entry.fenqu;
+          }
+        }
+      }
+    }
     return fenqu;
-},
+  },
 
-findMatchInJCR: function (journals, journalName) {
+  findMatchInJCR: function (journals, journalName) {
     let found = journals.find(journal => journal.Journal.toLowerCase() === journalName.toLowerCase());
     return found ? `${found.IF}|${found.Quartile}` : "";
-},
+  },
 
-findMatchInZKY: function (journals, journalName) {
+  findMatchInZKY: function (journals, journalName) {
     let found = journals.find(journal => journal.Journal.toLowerCase() === journalName.toLowerCase());
     if (found) {
-        return found.Top === "Y" ? `${found.fenqu}区TOP` : `${found.fenqu}区`;
+      return found.Top === "Y" ? `${found.fenqu}区TOP` : `${found.fenqu}区`;
     }
     return "";
-},
+  },
 
-findMatchInCCFCN: function (journals, journalName) {
+  findMatchInCCFCN: function (journals, journalName) {
     let found = journals.find(journal => journal.CNJournal === journalName);
     if (!found) {
-        found = journals.find(journal => journal.Journal === journalName);
+      found = journals.find(journal => journal.Journal === journalName);
     }
     return found ? found.fenqu : "";
-},
+  },
 
-findMatchInGLL: function (journals, journalName) {
+  findMatchInGLL: function (journals, journalName) {
     let found = journals.find(journal => journal.Journal === journalName);
     return found ? found.fenqu : "";
-},
+  },
 
-getRank: async function (item) {
-  if (item.itemType === 'journalArticle') {
+  getRank: async function (item) {
+    if (item.itemType === 'journalArticle') {
       if (item.getField('publicationTitle')) {
-          let ccf_result = this.findMatchInCCF(__ranks._ccf, item.getField('publicationTitle'));
-          let jcr_result = this.findMatchInJCR(__ranks._jcr, item.getField('publicationTitle'));
-          let zky_result = this.findMatchInZKY(__ranks._zky, item.getField('publicationTitle'));
-          let ccfcn_result = this.findMatchInCCFCN(__ranks._ccfcn, item.getField('publicationTitle'));
-          let gll_result = this.findMatchInGLL(__ranks._gll, item.getField('publicationTitle'));
+        let ccf_result = this.findMatchInCCF(__ranks._ccf, item.getField('publicationTitle'));
+        let jcr_result = this.findMatchInJCR(__ranks._jcr, item.getField('publicationTitle'));
+        let zky_result = this.findMatchInZKY(__ranks._zky, item.getField('publicationTitle'));
+        let ccfcn_result = this.findMatchInCCFCN(__ranks._ccfcn, item.getField('publicationTitle'));
+        let gll_result = this.findMatchInGLL(__ranks._gll, item.getField('publicationTitle'));
 
-          let result = [ccf_result, jcr_result, zky_result, ccfcn_result, gll_result]
-              .filter(res => res !== "")
-              .join("|");
-          
-          if (!result) {
-              if (item.getField('publicationTitle').includes("arXiv")) {
-                  result = "arXiv";
-              } else {
-                  result = "Not Found";
-              }
+        let result = [ccf_result, jcr_result, zky_result, ccfcn_result, gll_result]
+          .filter(res => res !== "")
+          .join("|");
+
+        if (!result) {
+          if (item.getField('publicationTitle').includes("arXiv")) {
+            result = "arXiv";
+          } else {
+            result = "Not Found";
           }
-          item.setField('callNumber', result);
-          await item.saveTx();
+        }
+        item.setField('callNumber', result);
+        await item.saveTx();
       } else {
-          item.setField('callNumber', "Invalid Title");
-          await item.saveTx();
+        item.setField('callNumber', "Invalid Title");
+        await item.saveTx();
       }
-  } else if (item.itemType === 'conferencePaper') {
+    } else if (item.itemType === 'conferencePaper') {
       let result = this.findMatchInCCF(__ranks._ccf, item.getField('proceedingsTitle')) || this.findMatchInCCF(__ranks._ccf, item.getField('conferenceName')) || "Not Found";
       item.setField('callNumber', result);
       await item.saveTx();
       // cb(item, result);
-  } else if (item.itemType === 'preprint') {
+    } else if (item.itemType === 'preprint') {
       item.setField('callNumber', item.getField('repository'));
       await item.saveTx();
-  } else if (item.itemType === 'thesis') {
+    } else if (item.itemType === 'thesis') {
       item.setField('callNumber', item.getField('university'));
       await item.saveTx();
-  }
-},  
+    }
+  },
 
 
-    // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+  // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 
 

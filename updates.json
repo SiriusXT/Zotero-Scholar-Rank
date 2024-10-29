@@ -3,9 +3,9 @@
     "SiriusXT@null.null": {
       "updates": [
         {
-          "version": "2.5",
-          "update_link": "https://github.com/SiriusXT/Zotero-Scholar-Rank/releases/download/2.5/Zotero-Scholar-Rank.xpi",
-          "update_hash": "sha256:71EF1EDE4D0FBC8D7725F22955E43B5BC6A342A226CDE89C175B4BA623CA35F4",
+          "version": "2.6",
+          "update_link": "https://github.com/SiriusXT/Zotero-Scholar-Rank/releases/download/2.6/Zotero-Scholar-Rank.xpi",
+          "update_hash": "sha256:EE9E2FC8B83EB375E4770A2C8BE354295C379545A6B7E44DBADEC86521EF704F",
           "applications": {
             "zotero": {
               "strict_min_version": "6.999",
